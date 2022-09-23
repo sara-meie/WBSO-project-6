@@ -1,0 +1,179 @@
+#!/bin/bash
+set -e
+
+# Alan is...
+# - A bootstrapping solution for utilities needed to interact with Alan projects
+# - A shorthand for these utilities
+# - A proxy to build system and compiler tools in an Alan project
+#
+# If an "offline" file is present in the project, it will not download anything.
+
+
+VERSION="2022.2"
+export ALAN_COMPILER_LOG=${ALAN_COMPILER_LOG:-warning} # default log level: warning
+
+function find_up {
+	UP_DIR=$(pwd)
+	while [[ "$UP_DIR" != "" && ! -e "$UP_DIR/$1" ]]; do
+		UP_DIR=${UP_DIR%/*}
+	done
+	echo "$UP_DIR"
+}
+
+BASEDIR=$(dirname "$0")
+SCRIPTDIR=$(cd "$BASEDIR"; pwd)
+INSTALL_ROOT=$(find_up "versions.json")
+
+function download_self {
+	if [[ -e "$INSTALL_ROOT/offline" ]]; then
+		echo "Cannot download in offline mode"
+		echo "Remove the 'offline' file to re-enable downloads"
+		exit 0
+	fi
+	function finish {
+		if [[ -f "$INSTALL_ROOT/versions.json" && -f "$SCRIPTDIR/.alan/alan-tools/jq" ]]; then
+			READVER=$("$SCRIPTDIR/.alan/alan-tools/jq" -r '.["platform version"]' < "$INSTALL_ROOT/versions.json")
+			if [[ $READVER != "" ]]; then
+				if [[ $READVER != "$VERSION" ]]; then
+					STARTOVER="true"
+				fi
+				VERSION=$READVER
+			fi
+		fi
+		curl -s "https://dist.alan-platform.com/share/alan/alan-$VERSION-$PLATFORM.tar.gz" | tar xzfC - "$SCRIPTDIR"
+		if [[ $STARTOVER == "true" ]]; then
+			echo "Alan has been upgraded. Please run your command again."
+			exit 1
+		fi
+	}
+	if [[ ! -f "$SCRIPTDIR/.alan/alan-tools/fetch" ]]; then
+		finish
+	fi
+	trap finish EXIT
+}
+
+if [[ $(uname) == "Darwin" ]]; then
+	PLATFORM="darwin-x64"
+elif [[ $(uname) == "Linux" ]]; then
+	PLATFORM="linux-x64"
+else
+	PLATFORM="windows-x64"
+fi
+
+case $1 in
+	--version)
+		echo "$VERSION"
+		exit
+		;;
+
+	--help)
+		echo "Usage:"
+		echo "  alan (bootstrap|build|package|connect|script|upgrade) [options]"
+		echo "  alan --help"
+		echo "  alan --version"
+		echo ""
+		echo "  f, bootstrap        Download tools for an environment (aka. fetch)"
+		echo "  b, build [-C 'dir'] Build the project, optionaly from a specific directory"
+		echo "  p, package          Package a project for deployment"
+		echo "  c, connect          Connect to an application-server (requires Linux or macOS)"
+		echo "  s, script           List available scripts"
+		echo "  u, upgrade          Download the latest versions.json for projects"
+		echo ""
+		echo "Usage for alan package:"
+		echo "  alan package 'project.pkg' 'deployment' ['output']"
+		echo "Example:"
+		echo "  alan package dist/project.pkg deployments/default"
+		echo "  alan package dist/project.pkg deployments/production dist/production.image"
+		echo ""
+		exit
+		;;
+
+	u | upgrade)
+		download_self
+		curl -s -L -o versions.json "https://dist.alan-platform.com/share/versions/versions.json"
+		;;
+
+	p | package)
+		if [[ ! -d "$SCRIPTDIR/.alan" ]]; then
+			echo "Run fetch first!"
+			exit 1
+		fi
+
+		if [[ $# == 4 ]]; then
+			OUTPUT=$4
+		elif [[ $# == 3 ]]; then
+			OUTPUT=dist/$(basename "$3").image
+		else
+			echo "Incorrect number of arguments to subcommand 'package'. Run ./alan --help for help."
+			exit 1
+		fi
+		"$INSTALL_ROOT/.alan/devenv/platform/project-build-environment/tools/deploy-system" "$2" "$3" "$OUTPUT"
+		;;
+
+	f | bootstrap | fetch)
+		if [[ $2 == "--version" ]]; then
+			VERSION=$3
+			shift 2
+		fi
+		download_self
+
+		if [[ "$2" == "" ]]; then
+			# allow shorthand for all design time envs
+			pushd "$INSTALL_ROOT" >> /dev/null
+			"$SCRIPTDIR/.alan/alan-tools/fetch" devenv
+			"$SCRIPTDIR/.alan/alan-tools/fetch" dataenv
+			popd >> /dev/null
+		else
+			shift 1
+			pushd "$INSTALL_ROOT" >> /dev/null
+			"$SCRIPTDIR/.alan/alan-tools/fetch" "$@"
+			popd >> /dev/null
+		fi
+		echo "Done"
+		;;
+
+	c | connect)
+		if [[ ! -d "$SCRIPTDIR/.alan" ]]; then
+			echo "Run fetch first!"
+			exit 1
+		fi
+
+		shift 1
+		env "PATH=$INSTALL_ROOT/.alan/devenv/platform/image/:$PATH" "$SCRIPTDIR/.alan/alan-tools/application-client" "--history" "$SCRIPTDIR/.alan/history" "$@"
+		;;
+
+	s | script)
+		find . -regex "\\./.alan/[a-z]*env/system-types/.*\\.sh"
+		;;
+
+	b | build)
+		if [[ ! -d "$SCRIPTDIR/.alan" ]]; then
+			echo "Run fetch first!"
+			exit 1
+		fi
+
+		if [[ $2 == "-C" ]]; then
+			cd "$3"
+		fi
+		if [[ $(find_up "migration.alan") ]]; then
+			cd "$(find_up "migration.alan")/.."
+		fi
+		if [[ ${PWD##*/} == "migrations" ]]; then
+			echo "Building migrations..."
+			for d in *; do
+				if [[ -d "$d" ]]; then
+					"$INSTALL_ROOT/.alan/dataenv/platform/project-compiler/tools/compiler-project" "$INSTALL_ROOT/.alan/dataenv/system-types/datastore/language-migration" -C "$d" "$INSTALL_ROOT/dist/$d.migration"
+					echo "- $d"
+				fi
+			done
+			echo "Done"
+		else
+			pushd "$INSTALL_ROOT" >> /dev/null
+			"$INSTALL_ROOT/.alan/devenv/platform/project-build-environment/tools/build-system" "$INSTALL_ROOT/dist/project.pkg"
+			popd >> /dev/null
+		fi
+		;;
+	*)
+		echo "Unknown command, run with --help for available commands"
+		;;
+esac
