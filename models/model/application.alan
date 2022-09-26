@@ -4,5 +4,14 @@ users
 interfaces
 
 root {
+	'Applicant': group {
+
+	}
+	'Project': group {
+
+	}
+	'Application' group {
+
+	}
 
 }
