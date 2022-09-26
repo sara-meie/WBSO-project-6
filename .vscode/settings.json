@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+        ".alan": true,
+        ".gitignore": true,
+        ".vscode": true,
+        "deploy.sh": true,
+        "dist": true
+    }
+}

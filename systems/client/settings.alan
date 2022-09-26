@@ -1,0 +1,8 @@
+application creator: "Kjerner"
+application name: "Alan Application"
+anonymous login: enabled
+csv actions: enabled
+report limit: 10000
+announcement: "" [ ]
+language: "English"
+engine language: english

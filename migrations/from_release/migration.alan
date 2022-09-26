@@ -1,0 +1,557 @@
+root = root as $ (
+	'Management': group = (
+		'Discount periods': collection = <! !> (
+			= (
+				'Period': text = "Summer holiday"
+				'Percentage': number = 3
+				'Minimal spendings': number = 3500
+			)
+			= (
+				'Period': text = "Christmas holiday"
+				'Percentage': number = 5
+				'Minimal spendings': number = 5000
+			)
+		)
+
+		'VAT percentage': number = 21
+
+		'Beverage types': collection = <! !> (
+			= ( 'Beverage type': text = "Juice" )
+			= ( 'Beverage type': text = "Soft drink" )
+			= ( 'Beverage type': text = "Cocktail" )
+			= ( 'Beverage type': text = "Beer" )
+			= ( 'Beverage type': text = "Wine" )
+			= ( 'Beverage type': text = "Coffee & tea" )
+		)
+
+		'Tables': collection = <! !> (
+			= (
+				'Table number': text = "T01"
+				'Seatings': number = 4
+			)
+			= (
+				'Table number': text = "T02"
+				'Seatings': number = 4
+			)
+			= (
+				'Table number': text = "T03"
+				'Seatings': number = 2
+			)
+			= (
+				'Table number': text = "T04"
+				'Seatings': number = 8
+			)
+			= (
+				'Table number': text = "T05"
+				'Seatings': number = 6
+			)
+		)
+	)
+
+	'Kitchen': group = (
+		'Products': collection = <! !> (
+			= (
+				'Product': text = "Shrimp"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 100
+					'Purchase price': number = 500000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Tomato"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 500
+					'Purchase price': number = 350000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Ciabatta"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1
+					'Purchase price': number = 125000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Beef"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1000
+					'Purchase price': number = 1400000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Salmon"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1000
+					'Purchase price': number = 1500000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Potato"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1000
+					'Purchase price': number = 500000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Sauerkraut"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 500
+					'Purchase price': number = 200000
+				)
+				'To be put on menu': stategroup = 'No' ( )
+			)
+			= (
+				'Product': text = "Egg"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1
+					'Purchase price': number = 80000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Milk"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1000
+					'Purchase price': number = 160000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Butter"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 500
+					'Purchase price': number = 120000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Cherry"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1000
+					'Purchase price': number = 475000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Orange"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1000
+					'Purchase price': number = 340000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Rum"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1000
+					'Purchase price': number = 1500000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Ginger"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1000
+					'Purchase price': number = 1100000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Potato mash"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1000
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Potato"
+							'Amount': number = 500
+						)
+						= (
+							'Product': text = "Milk"
+							'Amount': number = 200
+						)
+						= (
+							'Product': text = "Butter"
+							'Amount': number = 30
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Shrimp salad"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Shrimp"
+							'Amount': number = 50
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Tomato soup"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Tomato"
+							'Amount': number = 500
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Ciabatta with tapenade"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Ciabatta"
+							'Amount': number = 1
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Beef stew"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Beef"
+							'Amount': number = 2000
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Grilled salmon"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Salmon"
+							'Amount': number = 150
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Mashed potato with sauerkraut"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Potato mash"
+							'Amount': number = 200
+						)
+						= (
+							'Product': text = "Sauerkraut"
+							'Amount': number = 100
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Chocolate mousse"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Egg"
+							'Amount': number = 5
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Vanilla ice cream"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Milk"
+							'Amount': number = 300
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Cherry pie"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Cherry"
+							'Amount': number = 500
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Orange juice"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Orange"
+							'Amount': number = 200
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Spa rood"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1
+					'Purchase price': number = 210000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Heineken pilsner"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1
+					'Purchase price': number = 320000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Mojito"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Rum"
+							'Amount': number = 35
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Cappuccino"
+				'Product type': stategroup = 'Basic ingredient' (
+					'Amount': number = 1
+					'Purchase price': number = 250000
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+			= (
+				'Product': text = "Ginger tea"
+				'Product type': stategroup = 'Composed product' (
+					'Composed amount': number = 1
+					'Ingredients': collection = <! !> (
+						= (
+							'Product': text = "Ginger"
+							'Amount': number = 40
+						)
+					)
+				)
+				'To be put on menu': stategroup = 'Yes' ( )
+			)
+		)
+	)
+
+	'Service': group = (
+		'Menu': collection = <! !> (
+			= (
+				'Item name': text = "Shrimp salad"
+				'Selling price': number = 350
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Appetizer' ( )
+				)
+			)
+			= (
+				'Item name': text = "Tomato soup"
+				'Selling price': number = 450
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Appetizer' ( )
+				)
+			)
+			= (
+				'Item name': text = "Ciabatta with tapenade"
+				'Selling price': number = 250
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Appetizer' ( )
+				)
+			)
+			= (
+				'Item name': text = "Beef stew"
+				'Selling price': number = 1800
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Main course' ( )
+				)
+			)
+			= (
+				'Item name': text = "Grilled salmon"
+				'Selling price': number = 1650
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Main course' ( )
+				)
+			)
+			= (
+				'Item name': text = "Mashed potato with sauerkraut"
+				'Selling price': number = 1400
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Main course' ( )
+				)
+			)
+			= (
+				'Item name': text = "Chocolate mousse"
+				'Selling price': number = 450
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Dessert' ( )
+				)
+			)
+			= (
+				'Item name': text = "Vanilla ice cream"
+				'Selling price': number = 350
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Dessert' ( )
+				)
+			)
+			= (
+				'Item name': text = "Cherry pie"
+				'Selling price': number = 400
+				'Item type': stategroup = 'Dish' (
+					'Dish type': stategroup = 'Dessert' ( )
+				)
+			)
+			= (
+				'Item name': text = "Orange juice"
+				'Selling price': number = 450
+				'Item type': stategroup = 'Beverage' (
+					'Beverage type': text = "Juice"
+				)
+			)
+			= (
+				'Item name': text = "Spa rood"
+				'Selling price': number = 300
+				'Item type': stategroup = 'Beverage' (
+					'Beverage type': text = "Soft drink"
+				)
+			)
+			= (
+				'Item name': text = "Heineken pilsner"
+				'Selling price': number = 320
+				'Item type': stategroup = 'Beverage' (
+					'Beverage type': text = "Beer"
+				)
+			)
+			= (
+				'Item name': text = "Mojito"
+				'Selling price': number = 630
+				'Item type': stategroup = 'Beverage' (
+					'Beverage type': text = "Cocktail"
+				)
+			)
+			= (
+				'Item name': text = "Cappuccino"
+				'Selling price': number = 320
+				'Item type': stategroup = 'Beverage' (
+					'Beverage type': text = "Coffee & tea"
+				)
+			)
+			= (
+				'Item name': text = "Ginger tea"
+				'Selling price': number = 280
+				'Item type': stategroup = 'Beverage' (
+					'Beverage type': text = "Coffee & tea"
+				)
+			)
+		)
+
+		'Orders': collection = <! !> (
+			= (
+				'Order': text = "001"
+				'Order type': stategroup = 'In-house' (
+					'Table': text = "T03"
+				)
+				'Order lines': collection = <! !> (
+					= (
+						'Order line': text = "01"
+						'Item': text = "Ciabatta with tapenade"
+						'Amount': number = 1
+						'Line status': stategroup = 'On hold' ( )
+					)
+					= (
+						'Order line': text = "02"
+						'Item': text = "Shrimp salad"
+						'Amount': number = 1
+						'Line status': stategroup = 'On hold' ( )
+					)
+					= (
+						'Order line': text = "03"
+						'Item': text = "Heineken pilsner"
+						'Amount': number = 1
+						'Line status': stategroup = 'On hold' ( )
+					)
+					= (
+						'Order line': text = "04"
+						'Item': text = "Spa rood"
+						'Amount': number = 1
+						'Line status': stategroup = 'On hold' ( )
+					)
+					= (
+						'Order line': text = "05"
+						'Item': text = "Mashed potato with sauerkraut"
+						'Amount': number = 2
+						'Line status': stategroup = 'On hold' ( )
+					)
+				)
+				'Order status': stategroup = 'Open' ( )
+				'Discount applicable': stategroup = 'Yes' (
+					'Discount period': text = "Summer holiday"
+				)
+			)
+			= (
+				'Order': text = "002"
+				'Order type': stategroup = 'In-house' (
+					'Table': text = "T01"
+				)
+				'Order lines': collection = <! !> (
+					= (
+						'Order line': text = "01"
+						'Item': text = "Orange juice"
+						'Amount': number = 1
+						'Line status': stategroup = 'On hold' ( )
+					)
+					= (
+						'Order line': text = "02"
+						'Item': text = "Ginger tea"
+						'Amount': number = 1
+						'Line status': stategroup = 'On hold' ( )
+					)
+					= (
+						'Order line': text = "03"
+						'Item': text = "Tomato soup"
+						'Amount': number = 2
+						'Line status': stategroup = 'On hold' ( )
+					)
+				)
+				'Order status': stategroup = 'Open' ( )
+				'Discount applicable': stategroup = 'Yes' (
+					'Discount period': text = "Summer holiday"
+				)
+			)
+		)
+	)
+)

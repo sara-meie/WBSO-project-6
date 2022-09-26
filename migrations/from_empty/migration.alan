@@ -1,0 +1,15 @@
+root = root as $ (
+	'Management': group = (
+		'Discount periods': collection = <! !> none
+		'VAT percentage': number = 42
+		'Beverage types': collection = <! !> none
+		'Tables': collection = <! !> none
+	)
+	'Kitchen': group = (
+		'Products': collection = <! !> none
+	)
+	'Service': group = (
+		'Menu': collection = <! !> none
+		'Orders': collection = <! !> none
+	)
+)
