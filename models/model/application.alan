@@ -5,10 +5,27 @@ interfaces
 
 root {
 	'Applicant': collection ['Item name'] {
+		'Item name': text
 		'Type of applicant': stategroup (
 			'Company with employees' { }
 			'Entrepreneur with employees' { }
 			'Entrepreneur without employees' { }
+		)
+		'Type of applicant 2': stategroup (
+			'Company with employees' { }
+			'Entrepreneur' {
+				'Entrepreneur type': stategroup (
+					'With employees' { }
+					'Without employees' { }
+				)
+			}
+		)
+		'KVK number': number positive ' '
+		'First of the year': stategroup (
+			'Yes' { }
+			'No' {
+				'How many others?': number positive ' '
+			}
 		)
 	}
 
@@ -23,3 +40,4 @@ root {
 }
 
 numerical-types
+	' '
