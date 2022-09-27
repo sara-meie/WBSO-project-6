@@ -5,13 +5,17 @@ interfaces
 
 root {
 	'Applicant': collection ['Item name'] {
-
+		'Item name': text
 	}
+
 	'Project': collection ['Item name'] {
-
+		'Item name': text
 	}
-	'Application' collection ['Item name'] {
 
+	'Application': collection ['Item name'] {
+		'Item name': text
 	}
 
 }
+
+numerical-types
