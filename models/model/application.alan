@@ -5,7 +5,11 @@ interfaces
 
 root {
 	'Applicant': collection ['Item name'] {
-		'Item name': text
+		'Type of applicant': stategroup (
+			'Company with employees' { }
+			'Entrepreneur with employees' { }
+			'Entrepreneur without employees' { }
+		)
 	}
 
 	'Project': collection ['Item name'] {
