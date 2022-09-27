@@ -33,11 +33,33 @@ root {
 		'Item name': text
 	}
 
-	'Application': collection ['Item name'] {
-		'Item name': text
+	'Application': collection ['app id'] {
+		'app id': text
+		// TODO should be hidden
+			@default: guid
+		'start date': number 'date'
+		'end date': number 'date'
+		'employee(s)': collection ['employee id'] {
+			'employee id' : text
+				@default: guid
+			'name': text
+			'BSN': text
+				@validate: "^\\d{9}$"
+				@description: "please use a valid BSN number (9 digits)"
+		}
+		'hours worked': number 'hours'
+			@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
 	}
 
 }
 
 numerical-types
 	' '
+	'BSN'
+	'date' in 'days' @date
+	'days'
+	'hours'
+		@numerical-type: (
+			label: "Hours per quarter"
+			decimals: 2
+		)
