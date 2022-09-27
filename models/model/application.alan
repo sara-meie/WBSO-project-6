@@ -4,13 +4,13 @@ users
 interfaces
 
 root {
-	'Applicant': group {
+	'Applicant': collection ['Item name'] {
 
 	}
-	'Project': group {
+	'Project': collection ['Item name'] {
 
 	}
-	'Application' group {
+	'Application' collection ['Item name'] {
 
 	}
 
