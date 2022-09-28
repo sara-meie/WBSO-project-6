@@ -45,6 +45,15 @@ root {
 			@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
 	}
 
+	'User': collection ['user id'] {
+		'user id': text
+		'Type of User': stategroup (
+			'Applicant' { }
+			'Employee of RVO' { }
+			'Tax Office Controller' { }
+		)
+	}
+
 }
 
 numerical-types

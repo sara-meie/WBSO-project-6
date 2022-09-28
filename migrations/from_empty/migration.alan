@@ -2,4 +2,5 @@ root = root as $ (
 	'Applicant': collection = <! !> none
 	'Project': collection = <! !> none
 	'Application': collection = <! !> none
+	'User': collection = <! !> none
 )
