@@ -4,23 +4,17 @@ users
 interfaces
 
 root {
-	'Applicant': collection ['Item name'] {
-		'Item name': text
+	'Applicant': collection ['Applicant id'] {
+		'Applicant id': text
+			@default: guid
 		'Type of applicant': stategroup (
 			'Company with employees' { }
 			'Entrepreneur with employees' { }
 			'Entrepreneur without employees' { }
 		)
-		'Type of applicant 2': stategroup (
-			'Company with employees' { }
-			'Entrepreneur' {
-				'Entrepreneur type': stategroup (
-					'With employees' { }
-					'Without employees' { }
-				)
-			}
-		)
-		'KVK number': number positive ' '
+		'KVK number': text
+			@validate: "^\\d{8}$"
+			@description: "please use a valid KVK number (8 digits)"
 		'First of the year': stategroup (
 			'Yes' { }
 			'No' {
@@ -54,6 +48,7 @@ root {
 }
 
 numerical-types
+	'KVK number'
 	' '
 	'BSN'
 	'date' in 'days' @date
