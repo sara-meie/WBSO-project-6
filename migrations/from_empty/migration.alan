@@ -1,6 +1,17 @@
 root = root as $ (
+	'Users': collection = <! !> = (
+		'Name': text = "root"
+		'Type': stategroup = 'Admin' ( )
+	)
+	'Passwords': collection = <! !> = (
+		'User': text = "root"
+		'Data': group = (
+			'Password': text = "00$53cfd037ec848267703b98cc9847b1521276b0cd18fcb92b36062fbf96a70b45"
+			'Active': stategroup = 'No' ( )
+		)
+	)
+	'Authorities': collection = <! !> none
 	'Applicant': collection = <! !> none
 	'Project': collection = <! !> none
 	'Application': collection = <! !> none
-	'User': collection = <! !> none
 )
