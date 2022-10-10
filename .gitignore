@@ -1,0 +1,11 @@
+/_docs
+/.alan
+/deployments/*/definition.json
+/deployments/*/systems/*/instance/instance.json
+/deployments/*/systems/*/instance/timestamp.txt
+/deployments/*/systems/*/migration.pkg
+/dist
+/migrations/*/data
+/deploy.sh
+/README.md
+/systems/*/model.link
