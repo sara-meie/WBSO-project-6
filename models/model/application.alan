@@ -1,33 +1,32 @@
 users
 	dynamic: .'Users'
-		user-initializer: (
-			'Type' = create 'Unknown' ( )
+	user-initializer: (
+		'Type' = create 'Unknown' ( )
+	)
+
+	passwords: .'Passwords'
+		password-value: .'Data'.'Password'
+		password-status: .'Data'.'Active'
+			active: 'Yes' ( )
+			reset: 'No' ( )
+		password-initializer: (
+			'Data' = ( )
 		)
 
-		passwords: .'Passwords'
-			password-value: .'Data'.'Password'
-			password-status: .'Data'.'Active'
-				active: 'Yes' ( )
-				reset: 'No' ( )
-			password-initializer: (
-				'Data' = ( )
-			)
 
-		authorities: .'Authorities'
-			identities: .'Identities'>'User'
-			identity-initializer: ( )
+	authorities: .'Authorities'
+		identities: .'Identities'>'User'
+		identity-initializer: ( )
 
 interfaces
 
 root {
-	can-read: user . 'Type'?'Applicant'
 	can-update: user .'Type'?'Admin'
 
 	'Users': collection ['Name'] {
 		'Name': text
 		'Type': stategroup (
 			'Admin' { }
-			'Applicant' { }
 			'Unknown' { }
 		)
 	}
@@ -43,6 +42,7 @@ root {
 			)
 		}
 	}
+
 	'Authorities': collection ['Authority'] {
 		'Authority': text
 		'Identities': collection ['Identity'] {

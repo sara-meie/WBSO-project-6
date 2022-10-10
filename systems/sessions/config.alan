@@ -1,2 +1,2 @@
-password-authentication: disabled
-user-creation: disabled
+password-authentication: enabled
+user-creation: enabled
