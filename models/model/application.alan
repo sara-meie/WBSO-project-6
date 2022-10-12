@@ -1,0 +1,107 @@
+users
+	dynamic: .'Users'
+	user-initializer: (
+		'Type' = create 'Unknown' ( )
+	)
+
+	passwords: .'Passwords'
+		password-value: .'Data'.'Password'
+		password-status: .'Data'.'Active'
+			active: 'Yes' ( )
+			reset: 'No' ( )
+		password-initializer: (
+			'Data' = ( )
+		)
+
+
+	authorities: .'Authorities'
+		identities: .'Identities'>'User'
+		identity-initializer: ( )
+
+interfaces
+
+root {
+	can-update: user .'Type'?'Admin'
+
+	'Users': collection ['Name'] {
+		'Name': text
+		'Type': stategroup (
+			'Admin' { }
+			'Unknown' { }
+		)
+	}
+	'Passwords': collection ['User'] {
+		'User': text -> ^ .'Users'[]
+		'Data': group {
+			can-update: user is ( ^ >'User' )
+
+			'Password': text
+			'Active': stategroup (
+				'No' { }
+				'Yes' { }
+			)
+		}
+	}
+
+	'Authorities': collection ['Authority'] {
+		'Authority': text
+		'Identities': collection ['Identity'] {
+			'Identity': text
+			'User': text -> ^ ^ .'Users'[]
+		}
+	}
+
+	'Applicant': collection ['Applicant id'] {
+		'Applicant id': text
+			@default: guid
+		'Type of applicant': stategroup (
+			'Company with employees' { }
+			'Entrepreneur with employees' { }
+			'Entrepreneur without employees' { }
+		)
+		'KVK number': text
+			@validate: "^\\d{8}$"
+			@description: "please use a valid KVK number (8 digits)"
+		'First of the year': stategroup (
+			'Yes' { }
+			'No' {
+				'How many others?': number positive ' '
+			}
+		)
+	}
+
+	'Project': collection ['Item name'] {
+		'Item name': text
+	}
+
+	'Application': collection ['app id'] {
+		'app id': text
+		// TODO should be hidden
+			@default: guid
+		'start date': number 'date'
+		'end date': number 'date'
+		'employee(s)': collection ['employee id'] {
+			'employee id' : text
+				@default: guid
+			'name': text
+			'BSN': text
+				@validate: "^\\d{9}$"
+				@description: "please use a valid BSN number (9 digits)"
+		}
+		'hours worked': number 'hours'
+			@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
+	}
+
+}
+
+numerical-types
+	'KVK number'
+	' '
+	'BSN'
+	'date' in 'days' @date
+	'days'
+	'hours'
+		@numerical-type: (
+			label: "Hours per quarter"
+			decimals: 2
+		)
