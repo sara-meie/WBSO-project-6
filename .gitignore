@@ -1,6 +1,7 @@
 /deployments
 /_docs
 dist/
+.alan
 
 .vscode/*
 !.vscode/settings.json
