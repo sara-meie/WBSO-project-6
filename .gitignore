@@ -1,5 +1,6 @@
-./deployments
-
+/deployments
+/_docs
+dist/
 
 .vscode/*
 !.vscode/settings.json
