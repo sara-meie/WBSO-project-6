@@ -70,13 +70,16 @@ root {
 			}
 		)
 		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Applicant'
-		'Project Count': number 'count' = count < 'Projects'*
+		'Project Count': number 'count' = count < 'Projects'* @hidden
+		'Application Count': number ' ' = sum < 'Projects'* . 'Application Count'
 		// 'Projects': text -> downstream ^ .'Project'[] -<'Applicant'
 	}
 
 	'Project': collection ['Item name'] {
 		'Item name': text
 		'Applicant': text -> ^ .'Applicant'[] -<'Projects'
+		'Applications': reference-set -> downstream ^ .'Application'* = inverse >'Project'
+		'Application Count': number ' ' = count < 'Applications'* @hidden
 		// 'Applicant': reference-set -> ^ .'Applicant'* = inverse >'Project'
 	}
 
@@ -84,9 +87,10 @@ root {
 		'app id': text
 		// TODO should be hidden
 			@default: guid
-		'Project': text -> ^ . 'Project'[]
+		'Project': text -> ^ . 'Project'[] -<'Applications'
 		'start date': number 'date'
 		'end date': number 'date'
+		// 'testing': text -> . 'Project'
 		'employee(s)': collection ['employee id'] {
 			'employee id' : text
 				@default: guid
