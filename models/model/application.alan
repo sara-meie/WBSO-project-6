@@ -68,6 +68,10 @@ root {
 				'How many others?': number positive ' '
 			}
 		)
+		'Store Status': stategroup (
+			'Open' { @hidden}
+			'Closed' { @hidden}
+		)
 	}
 
 	'Project': collection ['Item name'] {
