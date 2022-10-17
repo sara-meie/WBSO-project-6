@@ -1,55 +1,56 @@
 users
-	dynamic: .'Users'
-	user-initializer: (
-		'Type' = create 'Unknown' ( )
-	)
+	anonymous
+	// dynamic: .'Users'
+	// user-initializer: (
+	// 	'Type' = create 'Unknown' ( )
+	// )
 
-	passwords: .'Passwords'
-		password-value: .'Data'.'Password'
-		password-status: .'Data'.'Active'
-			active: 'Yes' ( )
-			reset: 'No' ( )
-		password-initializer: (
-			'Data' = ( )
-		)
+	// passwords: .'Passwords'
+	// 	password-value: .'Data'.'Password'
+	// 	password-status: .'Data'.'Active'
+	// 		active: 'Yes' ( )
+	// 		reset: 'No' ( )
+	// 	password-initializer: (
+	// 		'Data' = ( )
+	// 	)
 
 
-	authorities: .'Authorities'
-		identities: .'Identities'>'User'
-		identity-initializer: ( )
+	// authorities: .'Authorities'
+	// 	identities: .'Identities'>'User'
+	// 	identity-initializer: ( )
 
 interfaces
 
 root {
-	can-update: user .'Type'?'Admin'
+	// can-update: user .'Type'?'Admin'
 
-	'Users': collection ['Name'] {
-		'Name': text
-		'Type': stategroup (
-			'Admin' { }
-			'Unknown' { }
-		)
-	}
-	'Passwords': collection ['User'] {
-		'User': text -> ^ .'Users'[]
-		'Data': group {
-			can-update: user is ( ^ >'User' )
+	// 'Users': collection ['Name'] {
+	// 	'Name': text
+	// 	'Type': stategroup (
+	// 		'Admin' { }
+	// 		'Unknown' { }
+	// 	)
+	// }
+	// 'Passwords': collection ['User'] {
+	// 	'User': text -> ^ .'Users'[]
+	// 	'Data': group {
+	// 		can-update: user is ( ^ >'User' )
 
-			'Password': text
-			'Active': stategroup (
-				'No' { }
-				'Yes' { }
-			)
-		}
-	}
+	// 		'Password': text
+	// 		'Active': stategroup (
+	// 			'No' { }
+	// 			'Yes' { }
+	// 		)
+	// 	}
+	// }
 
-	'Authorities': collection ['Authority'] {
-		'Authority': text
-		'Identities': collection ['Identity'] {
-			'Identity': text
-			'User': text -> ^ ^ .'Users'[]
-		}
-	}
+	// 'Authorities': collection ['Authority'] {
+	// 	'Authority': text
+	// 	'Identities': collection ['Identity'] {
+	// 		'Identity': text
+	// 		'User': text -> ^ ^ .'Users'[]
+	// 	}
+	// }
 
 	'Applicant': collection ['Applicant id'] {
 		'Applicant id': text
@@ -68,18 +69,43 @@ root {
 				'How many others?': number positive ' '
 			}
 		)
+		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Applicant'
+		'Project Count': number 'count' = count < 'Projects'* @hidden
+		'Application Count': number ' ' = sum < 'Projects'* . 'Application Count'
+		// 'Projects': text -> downstream ^ .'Project'[] -<'Applicant'
+		'Store Status': stategroup (
+			'Open' { }
+			'Closed' { }
+		)
+		'Store Status Label': text = switch .'Store Status' (
+			|'Open'   => "Open"
+			|'Closed' => "Closed"
+		)
 	}
 
 	'Project': collection ['Item name'] {
 		'Item name': text
+		'Applicant': text -> ^ .'Applicant'[] -<'Projects'
+		'Applications': reference-set -> downstream ^ .'Application'* = inverse >'Project'
+		'Application Count': number ' ' = count < 'Applications'* @hidden
+		// 'Applicant': reference-set -> ^ .'Applicant'* = inverse >'Project'
 	}
 
 	'Application': collection ['app id'] {
 		'app id': text
 		// TODO should be hidden
 			@default: guid
+		'Project': text -> ^ . 'Project'[] -<'Applications'
+		// as $'project'
+		// 	where 'not closed' -> $'project' blablabla
 		'start date': number 'date'
 		'end date': number 'date'
+		// 'testing': text = > 'Project' .'Applicant'
+
+		// ^ . 'Project'[] as $'p'
+		// 	where 'project name' -> $'p' .'Item name' = 'Project name'
+		// 'testing': text -> ^ . 'Project'[] as $'p'
+		// 	where 'project name' -> $'p' . 'Item name'
 		'employee(s)': collection ['employee id'] {
 			'employee id' : text
 				@default: guid
@@ -97,6 +123,7 @@ root {
 numerical-types
 	'KVK number'
 	' '
+	'count'
 	'BSN'
 	'date' in 'days' @date
 	'days'

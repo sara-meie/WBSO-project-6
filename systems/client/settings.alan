@@ -1,6 +1,6 @@
 application creator: "Kjerner"
 application name: "Alan Application"
-anonymous login: disabled
+anonymous login: enabled
 csv actions: enabled
 report limit: 10000
 announcement: "" [ ]
