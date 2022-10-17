@@ -1,0 +1,57 @@
+root = root as $ (
+	'Users': collection = <!"Default collection mapping, should succeed when key-property remains the same."!> map ( $ .'Users'* ) as $ = (
+		'Name': text = $ .'Name'
+		'Type': stategroup = switch $ .'Type' (
+			|'RVO Office' as $ = 'RVO Office' ( )
+			|'Unknown' as $ = 'Unknown' ( )
+			|'Tax Office Employee' as $ = 'Tax Office Employee' ( )
+			|'Applicant' as $ = 'Applicant' ( )
+		)
+	)
+	'Passwords': collection = <!"Default collection mapping, should succeed when key-property remains the same."!> map ( $ .'Passwords'* ) as $ = (
+		'User': text = $ .'User'
+		'Data': group = $ .'Data' as $ (
+			'Password': text = $ .'Password'
+			'Active': stategroup = switch $ .'Active' (
+				|'No' as $ = 'No' ( )
+				|'Yes' as $ = 'Yes' ( )
+			)
+		)
+	)
+	'Authorities': collection = <!"Default collection mapping, should succeed when key-property remains the same."!> map ( $ .'Authorities'* ) as $ = (
+		'Authority': text = $ .'Authority'
+		'Identities': collection = <!"Default collection mapping, should succeed when key-property remains the same."!> map ( $ .'Identities'* ) as $ = (
+			'Identity': text = $ .'Identity'
+			'User': text = $ .'User'
+		)
+	)
+	'Applicant': collection = <!"Default collection mapping, should succeed when key-property remains the same."!> map ( $ .'Applicant'* ) as $ = (
+		'Applicant id': text = $ .'Applicant id'
+		'Type of applicant': stategroup = switch $ .'Type of applicant' (
+			|'Company with employees' as $ = 'Company with employees' ( )
+			|'Entrepreneur with employees' as $ = 'Entrepreneur with employees' ( )
+			|'Entrepreneur without employees' as $ = 'Entrepreneur without employees' ( )
+		)
+		'KVK number': text = $ .'KVK number'
+		'First of the year': stategroup = switch $ .'First of the year' (
+			|'Yes' as $ = 'Yes' ( )
+			|'No' as $ = 'No' (
+				'How many others?': number = $ .'How many others?'
+			)
+		)
+	)
+	'Project': collection = <!"Default collection mapping, should succeed when key-property remains the same."!> map ( $ .'Project'* ) as $ = (
+		'Item name': text = $ .'Item name'
+	)
+	'Application': collection = <!"Default collection mapping, should succeed when key-property remains the same."!> map ( $ .'Application'* ) as $ = (
+		'app id': text = $ .'app id'
+		'start date': number = $ .'start date'
+		'end date': number = $ .'end date'
+		'employee(s)': collection = <!"Default collection mapping, should succeed when key-property remains the same."!> map ( $ .'employee(s)'* ) as $ = (
+			'employee id': text = $ .'employee id'
+			'name': text = $ .'name'
+			'BSN': text = $ .'BSN'
+		)
+		'hours worked': number = $ .'hours worked'
+	)
+)

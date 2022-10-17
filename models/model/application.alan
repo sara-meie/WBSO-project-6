@@ -21,16 +21,26 @@ users
 interfaces
 
 root {
-	can-update: user .'Type'?'Admin'
 
-	'Users': collection ['Name'] {
+
+	'Users': collection ['Name']
+		can-create: user .'Type'?'RVO Office'
+		can-delete: user .'Type'?'RVO Office'
+	{
+		can-update: user .'Type'?'RVO Office'
 		'Name': text
 		'Type': stategroup (
-			'Admin' { }
-			'Unknown' { }
+			'RVO Office' { }
+			'Unknown' { has-todo: user .'Type'?'RVO Office' }
+			'Tax Office Employee' { }
+			'Applicant' { }
 		)
 	}
-	'Passwords': collection ['User'] {
+	'Passwords': collection ['User']
+		can-create: user .'Type'?'RVO Office'
+		can-delete: user .'Type'?'RVO Office'
+	{
+		can-update: user .'Type'?'RVO Office'
 		'User': text -> ^ .'Users'[]
 		'Data': group {
 			can-update: user is ( ^ >'User' )
@@ -43,7 +53,11 @@ root {
 		}
 	}
 
-	'Authorities': collection ['Authority'] {
+	'Authorities': collection ['Authority']
+		can-create: user .'Type'?'RVO Office'
+		can-delete: user .'Type'?'RVO Office'
+	{
+		can-update: user .'Type'?'RVO Office'
 		'Authority': text
 		'Identities': collection ['Identity'] {
 			'Identity': text
@@ -51,7 +65,12 @@ root {
 		}
 	}
 
-	'Applicant': collection ['Applicant id'] {
+	'Applicant': collection ['Applicant id']
+		can-create: user .'Type'?'Applicant'
+		can-delete: user .'Type'?'RVO Office'
+	{
+		can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
+		can-update: user .'Type'?'Applicant'
 		'Applicant id': text
 			@default: guid
 		'Type of applicant': stategroup (
@@ -70,11 +89,19 @@ root {
 		)
 	}
 
-	'Project': collection ['Item name'] {
+	'Project': collection ['Item name']
+		can-create: user .'Type'?'Applicant'
+		can-delete: user .'Type'?'RVO Office'
+	{ 	can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
+		can-update: user .'Type'?'Applicant'
 		'Item name': text
 	}
 
-	'Application': collection ['app id'] {
+	'Application': collection ['app id']
+		can-create: user .'Type'?'Applicant'
+		can-delete: user .'Type'?'RVO Office'
+	{
+		can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
 		'app id': text
 		// TODO should be hidden
 			@default: guid

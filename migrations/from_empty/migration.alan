@@ -1,7 +1,7 @@
 root = root as $ (
 	'Users': collection = <! !> = (
 		'Name': text = "root"
-		'Type': stategroup = 'Admin' ( )
+		'Type': stategroup = 'RVO Office' ( )
 	)
 	'Passwords': collection = <! !> = (
 		'User': text = "root"

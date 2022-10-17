@@ -16,9 +16,9 @@ systems
 			'token interval' = 86400 // 1 day
 			'token limit' = 2592000 // ~1 month (30 days)
 			'domain name' = none
-			'base uri' = "https://app.alan-platform.com/meie_odo/auth/"
+			'base uri' = "https://app.alan-platform.com/nienke.nijkamp/auth/"
 			'known uris' = (
-				'https://app.alan-platform.com/meie_odo/client/' = "Client"
+				'https://app.alan-platform.com/nienke.nijkamp/client/' = "Client"
 			)
 			'openid authority issuer uris' = (
 			)
