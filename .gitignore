@@ -3,6 +3,15 @@
 dist/
 .alan
 
+/_docs
+/.alan
+/deployments
+/dist
+/migrations/*/data
+/deploy.sh
+/README.md
+/systems/*/model.link
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
