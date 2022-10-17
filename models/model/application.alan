@@ -69,15 +69,15 @@ root {
 				'How many others?': number positive ' '
 			}
 		)
-		'Store Status': stategroup (
-			'Open' {  }
-			'Closed' { }
-		)
+		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Applicant'
+		'Project Count': number 'count' = count < 'Projects'*
+		// 'Projects': text -> downstream ^ .'Project'[] -<'Applicant'
 	}
 
 	'Project': collection ['Item name'] {
 		'Item name': text
-		'Applicant': text -> ^ .'Applicant'[]
+		'Applicant': text -> ^ .'Applicant'[] -<'Projects'
+		// 'Applicant': reference-set -> ^ .'Applicant'* = inverse >'Project'
 	}
 
 	'Application': collection ['app id'] {
@@ -95,18 +95,6 @@ root {
 				@validate: "^\\d{9}$"
 				@description: "please use a valid BSN number (9 digits)"
 		}
-		// 'Item type': stategroup (
-		// 	'hours worked normal' {
-		// 		'hours': number
-		// 		@max: 500
-
-		// 	}
-		// 	'hours worked abnormal' {
-		// 		'hours': number
-		// 		@max: 500
-
-		// 	}
-		// )
 		'hours worked': number 'hours'
 			@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
 	}
@@ -116,6 +104,7 @@ root {
 numerical-types
 	'KVK number'
 	' '
+	'count'
 	'BSN'
 	'date' in 'days' @date
 	'days'
