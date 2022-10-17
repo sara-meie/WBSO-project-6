@@ -87,6 +87,9 @@ root {
 				'How many others?': number positive ' '
 			}
 		)
+		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Applicant'
+		'Project Count': number 'count' = count < 'Projects'* @hidden
+		'Application Count': number ' ' = sum < 'Projects'* . 'Application Count'
 	}
 
 	'Project': collection ['Item name']
@@ -95,6 +98,9 @@ root {
 	{ 	can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
 		can-update: user .'Type'?'Applicant'
 		'Item name': text
+		'Applicant': text -> ^ .'Applicant'[] -<'Projects'
+		'Applications': reference-set -> downstream ^ .'Application'* = inverse >'Project'
+		'Application Count': number ' ' = count < 'Applications'* @hidden
 	}
 
 	'Application': collection ['app id']
@@ -105,6 +111,7 @@ root {
 		'app id': text
 		// TODO should be hidden
 			@default: guid
+		'Project': text -> ^ . 'Project'[] -<'Applications'
 		'start date': number 'date'
 		'end date': number 'date'
 		'employee(s)': collection ['employee id'] {
@@ -124,6 +131,7 @@ root {
 numerical-types
 	'KVK number'
 	' '
+	'count'
 	'BSN'
 	'date' in 'days' @date
 	'days'

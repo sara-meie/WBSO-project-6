@@ -22,10 +22,11 @@ interfaces
 
 root {
 
-	// can-read: user
-	// can-update: user
 
-	'Users': collection ['Name'] {
+	'Users': collection ['Name']
+		can-create: user .'Type'?'RVO Office'
+		can-delete: user .'Type'?'RVO Office'
+	{
 		can-update: user .'Type'?'RVO Office'
 		'Name': text
 		'Type': stategroup (
@@ -35,7 +36,11 @@ root {
 			'Applicant' { }
 		)
 	}
-	'Passwords': collection ['User'] {
+	'Passwords': collection ['User']
+		can-create: user .'Type'?'RVO Office'
+		can-delete: user .'Type'?'RVO Office'
+	{
+		can-update: user .'Type'?'RVO Office'
 		'User': text -> ^ .'Users'[]
 		'Data': group {
 			can-update: user is ( ^ >'User' )
@@ -48,7 +53,11 @@ root {
 		}
 	}
 
-	'Authorities': collection ['Authority'] {
+	'Authorities': collection ['Authority']
+		can-create: user .'Type'?'RVO Office'
+		can-delete: user .'Type'?'RVO Office'
+	{
+		can-update: user .'Type'?'RVO Office'
 		'Authority': text
 		'Identities': collection ['Identity'] {
 			'Identity': text
@@ -58,6 +67,7 @@ root {
 
 	'Applicant': collection ['Applicant id']
 		can-create: user .'Type'?'Applicant'
+		can-delete: user .'Type'?'RVO Office'
 	{
 		can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
 		can-update: user .'Type'?'Applicant'
@@ -81,6 +91,7 @@ root {
 
 	'Project': collection ['Item name']
 		can-create: user .'Type'?'Applicant'
+		can-delete: user .'Type'?'RVO Office'
 	{ 	can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
 		can-update: user .'Type'?'Applicant'
 		'Item name': text
