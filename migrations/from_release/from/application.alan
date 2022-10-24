@@ -33,7 +33,29 @@ root {
 			'RVO Office' { }
 			'Unknown' { has-todo: user .'Type'?'RVO Office' }
 			'Tax Office Employee' { }
-			'Applicant' { }
+			'Applicant' {
+				can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
+				can-update: user .'Type'?'Applicant'
+				'Applicant id': text
+					@default: guid
+				'Type of applicant': stategroup (
+					'Company with employees' { }
+					'Entrepreneur with employees' { }
+					'Entrepreneur without employees' { }
+				)
+				'KVK number': text
+					@validate: "^\\d{8}$"
+					@description: "please use a valid KVK number (8 digits)"
+				'First of the year': stategroup (
+					'Yes' { }
+					'No' {
+						'How many others?': number positive ' '
+					}
+				)
+				// 'Projects': reference-set -> downstream ^ ^ .'Project'* = inverse >'Project Applicant'
+				// 'Project Count': number 'count' = count < 'Projects'* @hidden
+				// 'Application Count': number 'count' = sum < 'Projects'* . 'Application Count'
+			}
 		)
 	}
 	'Passwords': collection ['User']
@@ -65,42 +87,44 @@ root {
 		}
 	}
 
-	'Applicant': collection ['Applicant id']
-		// can-create: user .'Type'?'Applicant'
-		can-delete: user .'Type'?'RVO Office'
-	{
-		can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
-		can-update: user .'Type'?'Applicant'
-		'Applicant id': text
-			@default: guid
-		'Type of applicant': stategroup (
-			'Company with employees' { }
-			'Entrepreneur with employees' { }
-			'Entrepreneur without employees' { }
-		)
-		'KVK number': text
-			@validate: "^\\d{8}$"
-			@description: "please use a valid KVK number (8 digits)"
-		'First of the year': stategroup (
-			'Yes' { }
-			'No' {
-				'How many others?': number positive ' '
-			}
-		)
-		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Applicant'
-		'Project Count': number 'count' = count < 'Projects'* @hidden
-		'Application Count': number ' ' = sum < 'Projects'* . 'Application Count'
-	}
+	// 'Applicant': collection ['Applicant id']
+	// 	// can-create: user .'Type'?'Applicant'
+	// 	can-delete: user .'Type'?'RVO Office'
+	// {
+	// 	can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
+	// 	can-update: user .'Type'?'Applicant'
+	// 	'Applicant id': text
+	// 		@default: guid
+	// 	// 'Type of applicant': stategroup (
+	// 	// 	'Company with employees' { }
+	// 	// 	'Entrepreneur with employees' { }
+	// 	// 	'Entrepreneur without employees' { }
+	// 	// )
+	// 	// 'KVK number': text
+	// 	// 	@validate: "^\\d{8}$"
+	// 	// 	@description: "please use a valid KVK number (8 digits)"
+	// 	// 'First of the year': stategroup (
+	// 	// 	'Yes' { }
+	// 	// 	'No' {
+	// 	// 		'How many others?': number positive ' '
+	// 	// 	}
+	// 	// )
+	// 	'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Project Applicant'
+	// 	'Project Count': number 'count' = count < 'Projects'* @hidden
+	// 	'Application Count': number 'count' = sum < 'Projects'* . 'Application Count'
+	// 	// 'Total Applications': reference-set -> downstream ^ .'Application'* = inverse >'Applicant'
+	// }
 
-	'Project': collection ['Item name']
+	'Project': collection ['Project id']
 		// can-create: user .'Type'?'Applicant'
 		can-delete: user .'Type'?'RVO Office'
 	{ 	can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
 		can-update: user .'Type'?'Applicant'
-		'Item name': text
-		'Applicant': text -> ^ .'Applicant'[] -<'Projects'
-		'Applications': reference-set -> downstream ^ .'Application'* = inverse >'Project'
-		'Application Count': number ' ' = count < 'Applications'* @hidden
+		'Project id': text
+		'Project Applicant': text -> ^ .'Users'[] as $'u'
+			where 'select this user' -> $'u'.'Type'?'Applicant'
+		'Applications': reference-set -> downstream ^ .'Application'* = inverse >'Application Project'
+		'Application Count': number 'count' = count < 'Applications'* //@hidden
 	}
 
 	'Application': collection ['app id']
@@ -111,20 +135,62 @@ root {
 		'app id': text
 		// TODO should be hidden
 			@default: guid
-		'Project': text -> ^ . 'Project'[] -<'Applications'
-		'start date': number 'date'
-		'end date': number 'date'
-		'employee(s)': collection ['employee id'] {
-			'employee id' : text
-				@default: guid
-			'name': text
-			'BSN': text
-				@validate: "^\\d{9}$"
-				@description: "please use a valid BSN number (9 digits)"
-		}
+		'Application Project': text -> ^ .'Project'[] -<'Applications'
+
+		'Application Applicant id': text = >'Application Project'.'Project Applicant'
+		// 'test': text ~> ^ .'Applicant'[] as $'a'
+		// 	where 'match' ~> $ .'Application Count' = number 4
+		// 'Product': text -> ^ .'Products'[] as $'p'     // reference rule for text
+		// where 'In Stock' -> $'p'.'In Stock'?'Yes'
+		// 'Applicants': text ~> ^ .'Applicant'[] @description: "Please leave field empty"
+		// 'Application Applicant Count': stategroup = switch >'Applicants' (
+		// 	| node as $ => 'Yes' where 'Total Count' = $ ( 'Application Count' = $ .'Application Count')
+		// 	| none => 'No' ( )
+		// ) (
+		// 	'Yes' where 'Total Count' -> >'Applicants' {
+		// 		'Application Count': number 'count' = parameter
+		// 		@description: "Should be below 4"
+		// 	}
+		// 	'No' { }
+		// )
+		// 'Counter': number 'count' ~> ^ .'Application Applicant Count'
+		// 'Application Applicant Count': text -> ^ .'Applicant'[] as $'a'
+		// 	where 'test' -> $'a'.'Applicant id' = > 'Application Applicant id'
+		// 'start date': number 'date'
+		// 'end date': number 'date'
+		// 'employee(s)': collection ['employee id'] {
+		// 	'employee id' : text
+		// 		@default: guid
+		// 	'name': text
+		// 	'BSN': text
+		// 		@validate: "^\\d{9}$"
+		// 		@description: "please use a valid BSN number (9 digits)"
+		// }
+		// 'Application Count ref': text -> ^ .'Applicant' as $'a'
 		'hours worked': number 'hours'
 			@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
 	}
+
+	// 'Catalog': group {
+	// 	'Products': collection ['Name'] {
+	// 		'Name': text
+	// 		'Price': number 'eurocent'
+	// 		'Description': text
+	// 	}
+	// }
+
+	// 'Orders': collection ['ID'] {
+	// 	'ID': text
+	// 	'Product': text ~> ^ .'Catalog'.'Products'[]
+	// 	'Product found': stategroup = switch >'Product' (
+	// 		| node as $ => 'Yes' where 'Found Product' = $ ( 'Price' = $ .'Price' )
+	// 		| none => 'No' ( )
+	// 	) (
+	// 		'Yes'{ }
+	// 		'No' { }
+	// 	)
+	// }
+
 
 }
 
@@ -139,4 +205,31 @@ numerical-types
 		@numerical-type: (
 			label: "Hours per quarter"
 			decimals: 2
+		)
+	'eurocent'
+		// = 'units' * 'eurocent'
+		= 'fraction' * 'eurocent'
+		// = 'eurocent' * 'percent'
+		@numerical-type: (
+			label: "Euro"
+			decimals: 2
+		)
+	'fraction'
+		// = 'fraction' * 1 * 1  ^ 1
+		= 'percent'  * 1 * 10 ^ -2
+		= 'promille' * 1 * 10 ^ -3
+		@numerical-type: (
+			label: "1/%"
+			decimals: 3
+		)
+	'percent'
+		= 'fraction' * 1 * 10 ^ 2
+		@numerical-type: (
+			label: "%"
+		)
+	'promille'
+		= 'percent' * 1 * 10 ^ 1
+		@numerical-type: (
+			label: "%"
+			decimals: 1
 		)

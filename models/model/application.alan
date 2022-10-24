@@ -35,6 +35,7 @@ root {
 			'Tax Office Employee' { }
 			'Applicant' { }
 		)
+		'User Applications': reference-set -> downstream ^ .'Applicant'* = inverse >'User Applicant'
 	}
 	'Passwords': collection ['User']
 		can-create: user .'Type'?'RVO Office'
@@ -73,11 +74,24 @@ root {
 		can-update: user .'Type'?'Applicant'
 		'Applicant id': text
 			@default: guid
-		// 'Type of applicant': stategroup (
-		// 	'Company with employees' { }
-		// 	'Entrepreneur with employees' { }
-		// 	'Entrepreneur without employees' { }
-		// )
+		'Type of applicant': stategroup (
+			'Company with employees' { }
+			'Entrepreneur with employees' { }
+			'Entrepreneur without employees' { }
+		)
+		'User Applicant': text -> ^ .'Users'[] -<'User Applications'
+		'Personal Information': group { can-update: ^ .'Users'[] is ( user )
+			'KVK number': text
+			@default: "00000000"
+			@validate: "^\\d{8}$"
+			@description: "please use a valid KVK number (8 digits)"
+			'First of the year': stategroup @default: 'Yes' (
+				'Yes' { }
+				'No' {
+					'How many others?': number positive ' '
+				}
+		)
+		}
 		// 'KVK number': text
 		// 	@validate: "^\\d{8}$"
 		// 	@description: "please use a valid KVK number (8 digits)"
@@ -88,8 +102,8 @@ root {
 		// 	}
 		// )
 		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Project Applicant'
-		'Project Count': number 'count' = count < 'Projects'* @hidden
-		'Application Count': number 'count' = sum < 'Projects'* . 'Application Count'
+		// 'Project Count': number 'count' = count < 'Projects'* @hidden
+		// 'Application Count': number 'count' = sum < 'Projects'* . 'Application Count'
 		// 'Total Applications': reference-set -> downstream ^ .'Application'* = inverse >'Applicant'
 	}
 
@@ -102,6 +116,17 @@ root {
 		'Project Applicant': text -> ^ .'Applicant'[] -<'Projects'
 		'Applications': reference-set -> downstream ^ .'Application'* = inverse >'Application Project'
 		'Application Count': number 'count' = count < 'Applications'* //@hidden
+
+		'Sent for Delivery': stategroup (
+			'No' {
+				'hours worked': number 'hours'
+					@description: "No"
+			}
+			'Yes' where 'Order Ready' -> >'Project Applicant'.'Type of applicant'?'Company with employees' {
+				'hours worked': number 'hours'
+					@description: "Yes"
+			} // reference rule for state
+		)
 	}
 
 	'Application': collection ['app id']
@@ -115,11 +140,7 @@ root {
 		'Application Project': text -> ^ .'Project'[] -<'Applications'
 
 		'Application Applicant id': text = >'Application Project'.'Project Applicant'
-		// 'test': text ~> ^ .'Applicant'[] as $'a'
-		// 	where 'match' ~> $ .'Application Count' = number 4
-		// 'Product': text -> ^ .'Products'[] as $'p'     // reference rule for text
-		// where 'In Stock' -> $'p'.'In Stock'?'Yes'
-		'Applicants': text -> ^ .'Applicant'[]
+		'Applicants': text ~> ^ .'Applicant'[] @description: "Please leave field empty"
 		'Application Applicant Count': stategroup = switch >'Applicants' (
 			| node as $ => 'Yes' where 'Total Count' = $ ( 'Application Count' = $ .'Application Count')
 			| none => 'No' ( )
@@ -130,19 +151,19 @@ root {
 			}
 			'No' { }
 		)
-		// 'Counter': number 'count' ~> ^ .'Application Applicant Count'
-		// 'Application Applicant Count': text -> ^ .'Applicant'[] as $'a'
-		// 	where 'test' -> $'a'.'Applicant id' = > 'Application Applicant id'
-		// 'start date': number 'date'
-		// 'end date': number 'date'
-		// 'employee(s)': collection ['employee id'] {
-		// 	'employee id' : text
-		// 		@default: guid
-		// 	'name': text
-		// 	'BSN': text
-		// 		@validate: "^\\d{9}$"
-		// 		@description: "please use a valid BSN number (9 digits)"
-		// }
+		'Counter': number 'count' ~> ^ .'Application Applicant Count'
+		'Application Applicant Count': text -> ^ .'Applicant'[] as $'a'
+			where 'test' -> $'a'.'Applicant id' = > 'Application Applicant id'
+		'start date': number 'date'
+		'end date': number 'date'
+		'employee(s)': collection ['employee id'] {
+			'employee id' : text
+				@default: guid
+			'name': text
+			'BSN': text
+				@validate: "^\\d{9}$"
+				@description: "please use a valid BSN number (9 digits)"
+		}
 		// 'Application Count ref': text -> ^ .'Applicant' as $'a'
 		'hours worked': number 'hours'
 			@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
