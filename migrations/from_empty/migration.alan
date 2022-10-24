@@ -13,5 +13,6 @@ root = root as $ (
 	'Authorities': collection = <! !> none
 	'Applicant': collection = <! !> none
 	'Project': collection = <! !> none
+	'Employee': collection = <! !> none
 	'Application': collection = <! !> none
 )
