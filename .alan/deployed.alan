@@ -80,7 +80,7 @@ root {
 		)
 		'KVK number': text
 			@validate: "^\\d{8}$"
-			@description: "please use a valid KVK number (8 digits)"
+			@description: "Please use a valid KVK number (8 digits)"
 		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Applicant'
 		'Project Count': number 'count' = count < 'Projects'* @hidden
 		'Application Count': number ' ' = sum < 'Projects'* . 'Application Count'
@@ -115,36 +115,41 @@ root {
 		'Project': text -> ^ . 'Project'[] -<'Applications'
 		'Start Date': number 'date'
 		'End Date': number 'date'
-		'Employee(s)': collection ['Employee'] {
-			'Employee': text -> ^ ^ .'Employee'[]
-		}
 		'Hours worked per Type of applicant': stategroup (
 			'Company with employees' {
 				'hours worked': number 'hours'
-				@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
+				@description: "Estimation of amount of R&D hours until 31st of December;"
 				'How many other applications did you apply for this calendar year? ': number positive ' '
 				@max: 3
 				@description: "You can have a maximum of four applications per year"
+				'Employee(s)': collection ['Employee'] {
+					'Employee': text -> ^ ^ ^ .'Employee'[]
+				}
 			}
 			'Entrepreneur with employees' {
 				'hours worked': number 'hours'
-				@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
-
+				@description: "Estimation of amount of R&D hours until 31st of December;"
+			'How many other applications did you apply for this calendar year? ': number positive ' '
+			@max: 3
+			@description: "You can have a maximum of 4 applications per year"
+			'Employee(s)': collection ['Employee'] {
+				'Employee': text -> ^ ^ ^ .'Employee'[]
+			}
 			}
 			'Entrepreneur without employees' {
 				'Hours worked': stategroup (
 					'Worked less than 500 hours' {
-						'hours worked': text @default: "Sorry you are not eligible. "
+						'hours worked': text @default: "Not eligible for WBSO application"
 					}
 					'Worked more than 500 hours' {
 						'hours worked': number 'hours'
-						@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
+						@description: "Estimation of amount of R&D hours until 31st of December;"
 						@min: 500
 					}
 				)
 				'How many other applications did you apply for this calendar year? ': number positive ' '
 				@max: 3
-				@description: "You can have a maximum of four applications per year"
+				@description: "You can have a maximum of 4 applications per year"
 			}
 		)
 	}

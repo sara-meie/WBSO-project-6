@@ -9,16 +9,16 @@ systems
 			'timezone' = "Europe/Amsterdam"
 
 		instance-data:
-			from 'server' / "ide-meie_odo" / "client"
+			from 'server' / "ide-nienke.nijkamp" / "client"
 
 	'sessions'
 		configuration: custom
 			'token interval' = 86400 // 1 day
 			'token limit' = 2592000 // ~1 month (30 days)
 			'domain name' = none
-			'base uri' = "https://app.alan-platform.com/meie_odo/auth/"
+			'base uri' = "https://app.alan-platform.com/nienke.nijkamp/auth/"
 			'known uris' = (
-				'https://app.alan-platform.com/meie_odo/client/' = "Client"
+				'https://app.alan-platform.com/nienke.nijkamp/client/' = "Client"
 			)
 			'openid authority issuer uris' = (
 			)
@@ -26,13 +26,13 @@ systems
 			)
 
 		instance-data:
-			from 'server' / "ide-meie_odo" / "sessions"
+			from 'server' / "ide-nienke.nijkamp" / "sessions"
 
 	'server'
 		configuration: 'multi-core'
 
 		instance-data:
-			from 'server' / "ide-meie_odo" / "server"
+			from 'server' / "ide-nienke.nijkamp" / "server"
 			@migrate
 
 		schedule:
