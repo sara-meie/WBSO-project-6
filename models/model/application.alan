@@ -22,7 +22,11 @@ interfaces
 
 root {
 
-
+	// Each user can be of three possible types,
+		// - RVO office has the most amount of authority.
+		// - Unkonwn is a temporary type for applicants, this type should be changed by the RVO office
+		// - Tax Office Employee can only read values
+		// - Applicant is a user that can apply
 	'Users': collection ['Name']
 		can-create: user .'Type'?'RVO Office'
 		can-delete: user .'Type'?'RVO Office'
@@ -65,6 +69,7 @@ root {
 		}
 	}
 
+	// Applicants can be of three types, each of which needs a valid KVK number
 	'Applicant': collection ['Applicant id']
 		can-create: user .'Type'?'Applicant'
 		can-delete: user .'Type'?'RVO Office'
@@ -81,6 +86,7 @@ root {
 		'KVK number': text
 			@validate: "^\\d{8}$"
 			@description: "Please use a valid KVK number (8 digits)"
+		// The below lines of code enable the counting of applications per applicant
 		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Applicant'
 		'Project Count': number 'count' = count < 'Projects'* @hidden
 		'Application Count': number ' ' = sum < 'Projects'* . 'Application Count'
@@ -92,11 +98,13 @@ root {
 	{ 	can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
 		can-update: user .'Type'?'Applicant'
 		'Item name': text
+		// The below lines of code enable the counting of applications per applicant
 		'Applicant': text -> ^ .'Applicant'[] -<'Projects'
 		'Applications': reference-set -> downstream ^ .'Application'* = inverse >'Project'
 		'Application Count': number ' ' = count < 'Applications'* @hidden
 	}
 
+	// By having a separate Employee table the information entered previously can be reused.
 	'Employee': collection ['Name'] {
 		'Name': text
 		'BSN': text
@@ -104,13 +112,13 @@ root {
 			@default: "9 digit BSN number"
 	}
 
+	// The application can be for one of the three types of applicant which results in different data validations.
 	'Application': collection ['Application Id']
 		can-create: user .'Type'?'Applicant'
 		can-delete: user .'Type'?'RVO Office'
 	{
 		can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
 		'Application Id': text
-		// TODO should be hidden
 			@default: guid
 		'Project': text -> ^ . 'Project'[] -<'Applications'
 		'Start Date': number 'date'
