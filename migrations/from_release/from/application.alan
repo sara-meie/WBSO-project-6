@@ -80,13 +80,10 @@ root {
 		)
 		'KVK number': text
 			@validate: "^\\d{8}$"
-			@description: "please use a valid KVK number (8 digits)"
-		'First of the year': stategroup (
-			'Yes' { }
-			'No' {
-				'How many others?': number positive ' '
-			}
-		)
+			@description: "Please use a valid KVK number (8 digits)"
+		'Projects': reference-set -> downstream ^ .'Project'* = inverse >'Applicant'
+		'Project Count': number 'count' = count < 'Projects'* @hidden
+		'Application Count': number ' ' = sum < 'Projects'* . 'Application Count'
 	}
 
 	'Project': collection ['Item name']
@@ -95,28 +92,66 @@ root {
 	{ 	can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
 		can-update: user .'Type'?'Applicant'
 		'Item name': text
+		'Applicant': text -> ^ .'Applicant'[] -<'Projects'
+		'Applications': reference-set -> downstream ^ .'Application'* = inverse >'Project'
+		'Application Count': number ' ' = count < 'Applications'* @hidden
 	}
 
-	'Application': collection ['app id']
+	'Employee': collection ['Name'] {
+		'Name': text
+		'BSN': text
+			@validate: "^\\d{9}$"
+			@default: "9 digit BSN number"
+	}
+
+	'Application': collection ['Application Id']
 		can-create: user .'Type'?'Applicant'
 		can-delete: user .'Type'?'RVO Office'
 	{
 		can-read: user .'Type'?'Tax Office Employee' || user .'Type'?'RVO Office' || user .'Type'?'Applicant'
-		'app id': text
+		'Application Id': text
 		// TODO should be hidden
 			@default: guid
-		'start date': number 'date'
-		'end date': number 'date'
-		'employee(s)': collection ['employee id'] {
-			'employee id' : text
-				@default: guid
-			'name': text
-			'BSN': text
-				@validate: "^\\d{9}$"
-				@description: "please use a valid BSN number (9 digits)"
-		}
-		'hours worked': number 'hours'
-			@description: "inschatting van het aantal S&O-uren tot en met 31 december;"
+		'Project': text -> ^ . 'Project'[] -<'Applications'
+		'Start Date': number 'date'
+		'End Date': number 'date'
+		'Hours worked per Type of applicant': stategroup (
+			'Company with employees' {
+				'hours worked': number 'hours'
+				@description: "Estimation of amount of R&D hours until 31st of December;"
+				'How many other applications did you apply for this calendar year? ': number positive ' '
+				@max: 3
+				@description: "You can have a maximum of four applications per year"
+				'Employee(s)': collection ['Employee'] {
+					'Employee': text -> ^ ^ ^ .'Employee'[]
+				}
+			}
+			'Entrepreneur with employees' {
+				'hours worked': number 'hours'
+				@description: "Estimation of amount of R&D hours until 31st of December;"
+			'How many other applications did you apply for this calendar year? ': number positive ' '
+			@max: 3
+			@description: "You can have a maximum of 4 applications per year"
+			'Employee(s)': collection ['Employee'] {
+				'Employee': text -> ^ ^ ^ .'Employee'[]
+			}
+			}
+			'Entrepreneur without employees' {
+				'Hours worked': stategroup (
+					'Worked less than 500 hours' {
+						'hours worked': text @default: "Not eligible for WBSO application"
+					}
+					'Worked more than 500 hours' {
+						'hours worked': number 'hours'
+						@description: "Estimation of amount of R&D hours until 31st of December;"
+						@min: 500
+					}
+				)
+				'How many other applications did you apply for this calendar year? ': number positive ' '
+				@max: 3
+				@description: "You can have a maximum of 4 applications per year"
+			}
+		)
 	}
 
 }
@@ -124,6 +159,7 @@ root {
 numerical-types
 	'KVK number'
 	' '
+	'count'
 	'BSN'
 	'date' in 'days' @date
 	'days'
